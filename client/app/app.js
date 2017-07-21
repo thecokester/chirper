@@ -1,61 +1,150 @@
-var app = angular.module('myApp', []);
-var app = angular.module("myApp", ["ngRoute"]);
-app.config(function($routeProvider) {
+   var app = angular.module('myApp', ['ngRoute', 'controllers']);
+
+angular.module('controllers', [])
+    .controller('singleController', ['$scope', function() {
+        
+    }])
+    .controller('listController', ['$scope', function() {
+        
+    }])
+    .controller('addController', ['$scope', function() {
+        
+    }]);
+
+
+app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
-    .when("/", {
-        templateUrl : "../views/home.html"
-    })
-    .when("/add", {
-        templateUrl : "../views/add.html"
-    })
-})
-//     .when("/green", {
-//         templateUrl : "green.htm"
-//     })
-//     .when("/blue", {
-//         templateUrl : "blue.htm"
-//     });
+        .when('/', {
+            templateUrl: '../views/home.html'
+        }).when('/single/:id', {
+            templateUrl: '../views/single.html'
+        }).when('/add', {
+            templateUrl: '../views/add.html'
+        }).when('/list', {
+            templateUrl: '../views/list.html'
+        });
+
+    }]);
+    
+     app.controller('getRequest', function($http, $scope, $location) {
+        $http.get('/api/chirps')
+        .then(function(response) { 
+            $scope.postList = response.data;
+        });
+        $scope.getId=function(id) {
+            $location.path('/single/' + id);
+        }
+        $scope.deleteData = function(id){
+       $http.delete("/api/chirps/" + id)
+           .success(function(response){
+               $http.get('/api/chirps')
+               .then(function (response) {
+               
+               $scope.postList = response.data;
+           });
+       });    
+   }
+    });
+
+    app.controller('addController', function($scope, $http, $location) {
+        $scope.insertData = function() {
+          $http.post('/api/chirps', {'user' : $scope.user, 'message' : $scope.message})
+          .then(function(response) {
+            $scope.postList = response.data;
+            $scope.user = '';
+            $scope.message = '';  
+            });     
+        }  
+    });
+
+    app.controller('singleController', function($scope, $routeParams, $http, $location) {
+        var currentId = $routeParams.id;
+        $http.get('http://localhost:3000/api/chirps/' + currentId)
+        .then(function(response) {
+            $scope.postList = response.data;
+        });
+    
+    
+    $scope.deleteData = function(id){
+       $http.delete("/api/chirps/" + id)
+           .success(function(response){
+               $http.get('/api/chirps')
+               .then(function (response) {
+               console.log(response);
+               $scope.postList = response.data;
+               $location.path('/list/');
+           });
+       });    
+   }
+
+        });
+
+     
+// var controlApp = angular.module('controllers', []);
+// controlApp.controller('chirpy', function($scope, $http, $location, $routeParams) {
+//    $scope.goToSingle = function(id){
+//  $location.path("/single/" + id);
+//    }
+
+//      var currentId = $routeParams.id;
+//         $http.get('/api/chirps' + currentId)
+//         .then(function(response) {
+//             $scope.postList = response.data;
+//         });
+
+//         $scope.deleteData = function(id){
+//         $http.delete("/api/chirps/" + id)
+//             .success(function(response){
+//                 $http.get('/api/chirps')
+//                 .then(function (response) {
+                
+//                 $scope.chirpList = response.data;
+//             });
+//         });    
+//     }
+
 // });
 
-angular.module('contollers',[])
-.controller('homeController', ['$scope', function($scope){
-    $scope.thingsWayneIsWrongAbout = ['stuff, stuff, stuff, morestuff'];
+// controlApp.controller('chirpy', function($scope, $http, $location, $routeParams) {
+// $scope.insertData = function(){
+//         $http.post('/api/chirps', {'user': $scope.user,'message': $scope.message})
+//             .success(function(response){
+//             console.log("sent post");
+//             $scope.user = "";
+//             $scope.message = "";
+//             $http.get('/api/chirps')
+//                 .then(function (response) {
+//                 console.log(response);
+//                 $scope.chirpList = response.data;
+//             });
+//         });
+//     }
 
-$scope.isString = function(item) {
-    if (typeofitem == 'string') {
-        return true
-    }
+// });
+    
+//     controlApp.controller("singleController", function($scope, $routeParams, $http, $location){
+//     var theId = $routeParams.id;    
+//     $http.get("/api/chirps/" + theId)
+//        .then(function (response) {
+//             $scope.singleChirp = response.data;
+//     });
+    
 
-    return false
-} 
-}])
 
-var app = angular.module("app", []);
-    app.controller("HttpGetController", function ($scope, $http) {
+// $scope.deleteData = function(id){
+//       $http.delete("/api/chirps/" + id)
+//           .success(function(response){
+//               $http.get('/api/chirps')
+//               .then(function (response) {
+//               $scope.singleList = response.data;
+//               location.path("/list/")
+//           });
+//         });
+// }
 
-        $scope.SendData = function () {
-           // use $.param jQuery function to serialize data from JSON 
-            var data = $.param({
-                fName: $scope.firstName,
-                lName: $scope.lastName
-            });
-        
-            var config = {
-                headers : {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
-            }
+// });
 
-            $http.post('/ServerRequest/PostDataResponse', data, config)
-            .success(function (data, status, headers, config) {
-                $scope.PostDataResponse = data;
-            })
-            .error(function (data, status, header, config) {
-                $scope.ResponseDetails = "Data: " + data +
-                    "<hr />status: " + status +
-                    "<hr />headers: " + header +
-                    "<hr />config: " + config;
-            });
-        };
 
-    });
+          
+
+
