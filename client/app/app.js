@@ -16,12 +16,14 @@ app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: '../views/home.html'
-        }).when('/single/:id', {
+        }).when('/single/one/:id', {
             templateUrl: '../views/single.html'
         }).when('/add', {
             templateUrl: '../views/add.html'
         }).when('/list', {
             templateUrl: '../views/list.html'
+        }).when('/?#', {
+            templateUrl: '../views/users.html'
         });
 
     }]);
@@ -32,10 +34,10 @@ app.config(['$routeProvider', function ($routeProvider) {
             $scope.postList = response.data;
         });
         $scope.getId=function(id) {
-            $location.path('/single/' + id);
+            $location.path('/single/one/' + id);
         }
         $scope.deleteData = function(id){
-       $http.delete("/api/chirps/" + id)
+       $http.delete("/api/chirps/one/" + id)
            .success(function(response){
                $http.get('/api/chirps')
                .then(function (response) {
@@ -59,7 +61,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 
     app.controller('singleController', function($scope, $routeParams, $http, $location) {
         var currentId = $routeParams.id;
-        $http.get('http://localhost:3000/api/chirps/' + currentId)
+        $http.get('http://localhost:3000/api/chirps/one/' + currentId)
         .then(function(response) {
             $scope.postList = response.data;
         });
@@ -79,4 +81,28 @@ app.config(['$routeProvider', function ($routeProvider) {
 
         });
 
+app.controller("userControl", function($scope, $http, $location){
+   $http.get('/api/users')
+   .then(function (response) {
+       $scope.userList = response.data;
+   });
+});
+
+function goToPage(element) {
+   window.location = "#/user/" + element.value;
+}
      
+// Setting up the Variables
+var bars = document.getElementById("nav-action");
+var nav = document.getElementById("nav");
+
+
+//setting up the listener
+bars.addEventListener("click", barClicked, false);
+
+
+//setting up the clicked Effect
+function barClicked() {
+  bars.classList.toggle('active');
+  nav.classList.toggle('visible');
+}

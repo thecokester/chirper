@@ -10,8 +10,44 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-route.js"></script>
   </head>
   <body>
-     <div ng-view></div>
-    <img src='http://s1.1zoom.me/b5050/438/394292-svetik_2560x1440.jpg' >
-	  <script src="app/app.js"></script>
-  </body>
+    
+ <!--HamBurger Icon-->
+<div class="bars" id="nav-action">
+  <span class="bar"> </span>
+</div>
+
+<!--Navbar Links-->
+<nav id="nav">
+  <ul>
+    <li class="shape-circle circle-one"><a href="#/add">Chirper</a></li>
+    <li class="shape-circle circle-two"><a href="#/list">List of Chirps</a></li>
+    <li class="shape-circle circle-three"><a href="#">List of Users</a></li>
+    <li class="shape-circle circle-five">
+      <a href="#/">Home</a>
+    </li>
+  </ul>
+</nav>
+
+<!--Main Body Content-->
+<article class="container">
+  <h1>Check<br> The<br> Scenery</h1>
+  <p class='textcolor'> Inspired by Majestic Mountains and Japanese Style Architecture  </p>
+  <a href="https://theflatearthsociety.org/home/" target="_blank">Secret Link</a>
+</article>
+
+
+<div ng-controller="userControl">
+     <select onchange= 'goToPage(this)'>
+       <option>Users</option>
+       <option  ng-repeat="user in userList">{{user}}</option>
+     </select>
+ </div>
+
+ 
+      
+<div ng-view> </div>
+ 
+ <script src="app/app.js"></script>
+
+</body>
 </html>
